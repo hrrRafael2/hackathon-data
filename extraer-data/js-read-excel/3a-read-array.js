@@ -3,6 +3,7 @@
 // const a = document.getElementById("demo").onchange = (evt) => {
 //   var reader = new FileReader();
 
+
 //   reader.addEventListener("loadend", (evt) => {
 
 //     var workbook = XLSX.read(evt.target.result, {type: "binary"}),
@@ -27,7 +28,7 @@
 // }
 
 // funcion asyn 
-async function convertirExcelArray(){
+function convertirExcelArray(){
 const a = document.getElementById("demo").onchange = (evt) => {
   var reader = new FileReader();
 
@@ -55,45 +56,36 @@ const a = document.getElementById("demo").onchange = (evt) => {
 }
 
 
-// webscraping a googlemaps 
-
-/***
- * namePyme --> col
- * direccionPyme -->
- */
-
-function gooleMapsData(namePyme, direccionPyme){
-    const puppeteer = require('puppeteer');
-    const cheerio = require('cheerio');
-    const fs = require('fs');
-    // modificar la url a comillas invertidas
-    const url = `https://www.google.com/maps/search/${namePyme}+${direccionPyme}`;
-
-    (async () => {
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        await page.goto(url);
-    
-        const html = await page.content();
-        const $ = cheerio.load(html);
-    
-        const data = [];
-    
-        $('.section-result').each((i, el) => {
-        const title = $(el).find('.section-result-title span').text();
-        const address = $(el).find('.section-result-location span').text();
-        const phone = $(el).find('.section-result-phone-number').text();
-    
-        data.push({
-            title,
-            address,
-            phone
-        });
-        });
-    
-        fs.writeFile('data.json', JSON.stringify(data, null, 2), err => {
-        if (err) throw new Error('Something went wrong');
 
 
+// generar resultados en google maps
+
+async function getData(query){
+
+  const { chromium } = require("playwright");
+
+
+  // definimos playwight
+  // utilizaremos playwhrigt
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+
+  // ir a la pagina de google maps
+  await page.goto('https://maps.google.com/');
+  // traer el input de busqueda
+  await page.type('input[name="q"]', query);
+  await page.keyboard.press('Enter');
+  // esperar a que cargue la pagina
+  await page.waitForNavigation();
+  
+  // captura de pantalla 
+  await page.screenshot({path: `./screenshots/${query}.png`});
+  
+
+  // cerrar el navegador
+  await browser.close();
 }
 
+convertirExcelArray();
+getData('Tacos estado de mexico');
+    
