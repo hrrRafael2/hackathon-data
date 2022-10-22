@@ -56,7 +56,11 @@ const a = document.getElementById("demo").onchange = (evt) => {
 }
 
 
-
+// desestructurar el array del excel 
+function desArray(data){
+    const [name,domicilio] = data;
+     
+}
 
 // generar resultados en google maps
 
